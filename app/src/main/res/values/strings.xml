@@ -1,8 +1,10 @@
 <resources>
-    <string name="app_name">NoteApp (Event-Driven)</string>
+    <string name="app_name">NoteApp (MVC &amp; Multitasking)</string>
     <string name="title_notes_list">รายการโน้ตทั้งหมด</string>
     <string name="btn_add_new_note">+ เพิ่มโน้ตใหม่</string>
+    <string name="btn_browse_notes">🔍 ค้นหาโน้ต (Browse Notes)</string>
     <string name="title_add_note">เพิ่มโน้ตใหม่ (Add Note)</string>
+    <string name="title_browse_notes">ค้นหาโน้ต (Browse Notes)</string>
     <string name="section_user_info">ข้อมูลผู้ใช้ (User Info)</string>
     <string name="hint_user_name">ชื่อผู้ใช้ (User Name)</string>
     <string name="hint_user_email">อีเมล (Email)</string>
@@ -13,9 +15,13 @@
     <string name="type_checklist_note">CheckListNote (โน้ตเช็คลิสต์)</string>
     <string name="hint_text_content">ข้อความโน้ต (Note Content)</string>
     <string name="hint_checklist_item">รายการเช็คลิสต์ใหม่</string>
+    <string name="hint_search_user">พิมพ์ชื่อผู้ใช้ที่ต้องการค้นหา...</string>
     <string name="btn_add_item">เพิ่มรายการ</string>
+    <string name="btn_search">ค้นหา</string>
     <string name="btn_save">บันทึกโน้ต</string>
     <string name="btn_cancel">ยกเลิก</string>
     <string name="msg_note_added">บันทึกโน้ตเรียบร้อยแล้ว!</string>
     <string name="msg_input_required">กรุณากรอกชื่อผู้ใช้และหัวข้อโน้ต</string>
+    <string name="msg_loading">กำลังโหลดข้อมูล (2 วินาที)...</string>
+    <string name="msg_not_found">ไม่พบข้อมูล</string>
 </resources>

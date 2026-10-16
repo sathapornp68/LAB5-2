@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -18,13 +19,15 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
 /**
- * View layer in MVC Pattern displaying note list and receiving updates via Controller.
+ * View layer in MVC Pattern with Multitasking (Thread) for navigating to BrowseNoteActivity.
  */
 public class MainActivity extends AppCompatActivity implements OnNoteAddedListener {
 
     private RecyclerView rvNotes;
     private TextView tvEmptyState;
-    private Button btnAddNote;
+    private Button btnAddNote, btnBrowseNotes;
+    private LinearLayout llMainLoadingContainer;
+
     private NoteAdapter adapter;
     private NoteController noteController;
 
@@ -49,17 +52,22 @@ public class MainActivity extends AppCompatActivity implements OnNoteAddedListen
         // Register event listener via Controller
         noteController.registerNoteAddedListener(this);
 
-        // Event-driven OnClickListener: Navigate to AddNoteActivity
+        // Click Event: Open AddNoteActivity
         btnAddNote.setOnClickListener(v -> {
             Intent intent = new Intent(MainActivity.this, AddNoteActivity.class);
             startActivity(intent);
         });
+
+        // Section 2: Multitasking Click Event with Thread, 2s Delay, and ProgressBar
+        btnBrowseNotes.setOnClickListener(v -> loadBrowseNotesWithThread());
     }
 
     private void initViews() {
         rvNotes = findViewById(R.id.rvNotes);
         tvEmptyState = findViewById(R.id.tvEmptyState);
         btnAddNote = findViewById(R.id.btn_add_note);
+        btnBrowseNotes = findViewById(R.id.btnBrowseNotes);
+        llMainLoadingContainer = findViewById(R.id.llMainLoadingContainer);
     }
 
     private void setupRecyclerView() {
@@ -68,6 +76,33 @@ public class MainActivity extends AppCompatActivity implements OnNoteAddedListen
         rvNotes.setLayoutManager(new LinearLayoutManager(this));
         rvNotes.setAdapter(adapter);
         updateEmptyState();
+    }
+
+    /**
+     * Section 2 Multitasking:
+     * Starts background Thread, displays ProgressBar, delays 2 seconds, then opens BrowseNoteActivity.
+     */
+    private void loadBrowseNotesWithThread() {
+        llMainLoadingContainer.setVisibility(View.VISIBLE);
+        btnBrowseNotes.setEnabled(false);
+
+        new Thread(() -> {
+            try {
+                // Delay 2 seconds as specified in requirement
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            // Update UI & Navigate on main thread
+            runOnUiThread(() -> {
+                llMainLoadingContainer.setVisibility(View.GONE);
+                btnBrowseNotes.setEnabled(true);
+
+                Intent intent = new Intent(MainActivity.this, BrowseNoteActivity.class);
+                startActivity(intent);
+            });
+        }).start();
     }
 
     @Override
@@ -94,17 +129,15 @@ public class MainActivity extends AppCompatActivity implements OnNoteAddedListen
         }
     }
 
-    // Event callback triggered when a Note is added anywhere in the app
     @Override
     public void onNoteAdded(Note note) {
         refreshNotesList();
-        Toast.makeText(this, "MVC Controller Event: New Note added (" + note.getTitle() + " by " + note.getUser().getName() + ")", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "MVC Event: New Note added (" + note.getTitle() + ")", Toast.LENGTH_SHORT).show();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        // Clean up listener via Controller
         noteController.unregisterNoteAddedListener(this);
     }
 }
